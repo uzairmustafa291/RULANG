@@ -2214,23 +2214,29 @@ html, body {
     font-size: 11px;
   }
   
-  /* IDE Layout - Stack vertically */
+  /* IDE Layout - Stack vertically and allow scrolling */
   .ide-layout {
+    position: relative !important;
+    top: auto !important;
+    bottom: auto !important;
     flex-direction: column;
-    top: var(--header-h);
+    overflow-y: auto !important;
+    overflow-x: hidden;
     padding: 6px;
     gap: 6px;
-    overflow-y: auto;
+    min-height: calc(100vh - var(--header-h) - var(--statusbar-h));
+    padding-bottom: 100px;
   }
   
   /* Explorer Panel */
   .panel--explorer {
     width: 100%;
-    max-height: 180px;
+    max-height: 200px;
     flex-shrink: 0;
     border-radius: 4px;
     border-right: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
+    overflow-y: auto !important;
   }
   
   .panel--explorer.collapsed {
@@ -2239,7 +2245,7 @@ html, body {
   }
   
   .explorer-section {
-    max-height: 140px;
+    max-height: 160px;
     overflow-y: auto;
     font-size: 12px;
   }
@@ -2254,12 +2260,20 @@ html, body {
     margin-right: 4px;
   }
   
+  .lang-ref {
+    max-height: 100px;
+    overflow-y: auto;
+    font-size: 10px;
+    padding: 8px;
+  }
+  
   /* Editor Panel */
   .panel--editor {
     width: 100%;
-    min-height: 280px;
-    flex: 1;
+    min-height: 300px;
+    flex: 0 1 auto;
     border-radius: 4px;
+    overflow: hidden !important;
   }
   
   .panel__header {
@@ -2273,11 +2287,12 @@ html, body {
   
   .editor-tabs {
     width: 100%;
-    overflow-x: auto;
+    overflow-x: auto !important;
     display: flex;
     gap: 2px;
     padding: 2px 0;
     -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
   }
   
   .tab {
@@ -2309,14 +2324,15 @@ html, body {
     font-size: 11px;
   }
   
-  /* Console Panel - Hidden by default on mobile */
+  /* Console Panel - Scrollable on mobile */
   .panel--console {
     width: 100%;
-    max-height: 160px;
+    min-height: 200px;
     flex-shrink: 0;
     border-radius: 4px;
     border-left: 1px solid var(--border);
     border-top: 1px solid var(--border);
+    overflow-y: auto !important;
   }
   
   .console-output {
@@ -2752,23 +2768,4 @@ kbd {
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
-}
-
-/* ──────────────────────── Responsive ──────────────────────────── */
-@media (max-width: 1100px) {
-  :root { --explorer-w: 200px; --console-w: 280px; }
-  .logo-sub { display: none; }
-}
-
-@media (max-width: 900px) {
-  :root { --explorer-w: 180px; --console-w: 240px; }
-  .welcome-art { display: none; }
-  .btn { padding: 6px 10px; }
-}
-
-@media (max-width: 700px) {
-  .panel--explorer { display: none; }
-  :root { --console-w: 200px; }
-  .btn { padding: 6px 9px; font-size: 11px; }
-  .logo-sub { display: none; }
 }
