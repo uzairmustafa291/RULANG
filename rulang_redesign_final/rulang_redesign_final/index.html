@@ -1,0 +1,977 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RULang v2.0 IDE — Roman Urdu Retro Programming Language</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ═══════════════════════════════════════════════════════
+       SCANLINE OVERLAY — Gives the CRT monitor effect
+  ═══════════════════════════════════════════════════════ -->
+    <div class="scanlines" aria-hidden="true"></div>
+    <div class="crt-flicker" aria-hidden="true"></div>
+
+    <!-- ═══════════════════════════════════════════════════════
+       TOP MENU BAR
+  ═══════════════════════════════════════════════════════ -->
+    <header class="menubar">
+      <div class="menubar__logo">
+        <span class="logo-bracket">[</span>
+        <span class="logo-text">RU</span>
+        <span class="logo-lang">LANG</span>
+        <span class="logo-bracket">]</span>
+        <span class="logo-sub">Roman Urdu Retro Compiler v2.0</span>
+      </div>
+
+      <nav class="menubar__actions">
+        <button class="btn btn--file" id="btn-open-folder" title="Open Folder">
+          <span class="btn-icon">📁</span> FOLDER KHOLO
+        </button>
+        <button class="btn btn--file" id="btn-new-file" title="New File">
+          <span class="btn-icon">📄</span> NAYI FILE
+        </button>
+        <button class="btn btn--file" id="btn-save-file" title="Save File">
+          <span class="btn-icon">💾</span> FILE BACHAAO
+        </button>
+        <button
+          class="btn btn--run"
+          id="btn-run"
+          title="Run Program (Ctrl+Enter)"
+        >
+          <span class="btn-icon">▶</span> CHALAO
+        </button>
+        <button class="btn btn--clear" id="btn-clear" title="Clear Output">
+          <span class="btn-icon">⊗</span> SAAF KARO
+        </button>
+        <button
+          class="btn btn--python"
+          id="btn-python"
+          title="Generate Python Code"
+        >
+          <span class="btn-icon">⟳</span> PYTHON BANAO
+        </button>
+        <button class="btn btn--help" id="btn-help" title="Show Help">
+          <span class="btn-icon">?</span> MADAD
+        </button>
+        <select class="theme-selector" id="theme-selector" title="Select Theme">
+          <option value="dark">Dark Theme</option>
+          <option value="light">Light Theme</option>
+          <option value="monokai">Monokai</option>
+          <option value="github">GitHub</option>
+          <option value="dracula">Dracula</option>
+        </select>
+      </nav>
+
+      <div class="menubar__status">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">TAYYAR</span>
+      </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════════════
+       MAIN IDE LAYOUT
+  ═══════════════════════════════════════════════════════ -->
+    <main class="ide-layout">
+      <!-- LEFT: File Explorer -->
+      <aside class="panel panel--explorer" id="explorer-panel">
+        <div class="panel__header">
+          <span class="panel__icon">📁</span>
+          <span>MISAALEN (EXAMPLES)</span>
+          <button
+            class="panel__collapse"
+            id="collapse-explorer"
+            title="Toggle Explorer"
+          >
+            ◀
+          </button>
+        </div>
+
+        <div class="explorer-section">
+          <div class="explorer-label">RULang/</div>
+
+          <div class="file-group">
+            <div class="file-group__label">📂 examples/</div>
+            <ul class="file-list" id="example-files">
+              <li class="file-item active" data-example="hello">
+                <span class="file-icon">📄</span> hello.ru
+              </li>
+              <li class="file-item" data-example="conditionals">
+                <span class="file-icon">📄</span> conditionals.ru
+              </li>
+              <li class="file-item" data-example="switch_demo">
+                <span class="file-icon">📄</span> switch.ru
+              </li>
+              <li class="file-item" data-example="for_loop">
+                <span class="file-icon">📄</span> for_loop.ru
+              </li>
+              <li class="file-item" data-example="while_loop">
+                <span class="file-icon">📄</span> while_loop.ru
+              </li>
+              <li class="file-item" data-example="functions">
+                <span class="file-icon">📄</span> functions.ru
+              </li>
+              <li class="file-item" data-example="arithmetic">
+                <span class="file-icon">📄</span> arithmetic.ru
+              </li>
+              <li class="file-item" data-example="grade_check">
+                <span class="file-icon">📄</span> grade_check.ru
+              </li>
+            </ul>
+          </div>
+
+          <div class="file-group">
+            <div class="file-group__label">📂 docs/</div>
+            <ul class="file-list">
+              <li class="file-item" data-doc="readme">
+                <span class="file-icon">📋</span> README.md
+              </li>
+            </ul>
+          </div>
+
+          <div
+            class="file-group"
+            id="opened-folder-group"
+            style="display: none"
+          >
+            <div class="file-group__label" id="opened-folder-label">
+              📂 Opened Folder/
+            </div>
+            <ul class="file-list" id="opened-files"></ul>
+          </div>
+        </div>
+
+        <!-- Language Reference Quick Card -->
+        <div class="lang-ref">
+          <div class="lang-ref__title">⌨ ZAABAN HAWALA v2</div>
+          <div class="lang-ref__row">
+            <span class="kw">rakho</span><span>= declare/assign</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">likho</span><span>= print</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">agar…to</span><span>= if…then</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">warna agar</span><span>= else if</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">warna</span><span>= else</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">khatam</span><span>= end block</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">chunao</span><span>= switch</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">haalat</span><span>= case</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">jabtak…karo</span><span>= while</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">karo…jabtak</span><span>= do-while</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">gino se tak</span><span>= for loop</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">badhao</span><span>= step</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">kaam</span><span>= function</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">wapas</span><span>= return</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">todho</span><span>= break</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">agla</span><span>= continue</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">aur / ya / nahi</span><span>= and/or/not</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">+ - * / %</span><span>= arithmetic</span>
+          </div>
+          <div class="lang-ref__row">
+            <span class="kw">&gt; &lt; == != &gt;= &lt;=</span
+            ><span>= compare</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- CENTER: Editor -->
+      <section class="panel panel--editor">
+        <div class="panel__header">
+          <span class="panel__icon">✏</span>
+          <span id="editor-filename">hello.ru</span>
+          <div class="editor-tabs" id="editor-tabs">
+            <span class="tab active" data-tab="editor">EDITOR</span>
+            <span class="tab" data-tab="tokens">TOKENS</span>
+            <span class="tab" data-tab="nfa-dfa">NFA/DFA</span>
+            <span class="tab" data-tab="ast">AST/PARSE</span>
+            <span class="tab" data-tab="semantic">SEMANTIC</span>
+            <span class="tab" data-tab="ir">IR CODE</span>
+            <span class="tab" data-tab="optimize">OPTIMIZE</span>
+            <span class="tab" data-tab="target">TARGET</span>
+            <span class="tab" data-tab="emission">EMISSION</span>
+            <span class="tab" data-tab="python">PYTHON</span>
+            <span class="tab tab--demo" data-tab="demo">7 DEMO</span>
+          </div>
+          <div class="editor-info">
+            <span id="cursor-pos">Ln 1, Col 1</span>
+            <span class="lang-badge">RULang</span>
+          </div>
+        </div>
+
+        <!-- Editor Tab Content -->
+        <div class="tab-content active" id="tab-editor">
+          <div class="editor-wrapper">
+            <div class="line-numbers" id="line-numbers">1</div>
+            <div class="code-editor-container">
+              <pre class="syntax-highlight" id="syntax-highlight"></pre>
+              <textarea
+                id="code-editor"
+                class="code-editor"
+                spellcheck="false"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                placeholder="// Yahan apna RULang code likhein..."
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tokens Tab -->
+        <div class="tab-content" id="tab-tokens">
+          <div class="tokens-viewer" id="tokens-viewer">
+            <div class="empty-state">
+              <div class="empty-state__icon">🔤</div>
+              <div>Program chalayein tokens dekhne ke liye</div>
+              <div class="empty-state__sub">
+                (Run the program to see the tokens)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NFA/DFA Visualization Tab -->
+        <div class="tab-content" id="tab-nfa-dfa">
+          <div class="nfa-dfa-viewer" id="nfa-dfa-viewer">
+            <div class="layer-header">
+              <div class="layer-title">
+                <span class="layer-icon">🔄</span>
+                <span>Layer 1: Lexical Analysis — NFA/DFA</span>
+              </div>
+              <div class="layer-desc">
+                Finite Automaton visualization showing state transitions
+              </div>
+            </div>
+            <div class="nfa-dfa-content" id="nfa-dfa-content">
+              <div class="empty-state">
+                <div class="empty-state__icon">🔄</div>
+                <div>Program chalayein NFA/DFA dekhne ke liye</div>
+                <div class="empty-state__sub">
+                  (Run to see the finite automaton for token patterns)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AST/Parse Tree Tab -->
+        <div class="tab-content" id="tab-ast">
+          <div class="ast-viewer" id="ast-viewer">
+            <div class="layer-header">
+              <div class="layer-title">
+                <span class="layer-icon">🌳</span>
+                <span>Layer 2: Syntax Analysis — AST & Parse Tree</span>
+              </div>
+              <div class="layer-desc">
+                Abstract Syntax Tree (top) and Parse Tree (bottom) from
+                recursive descent parsing
+              </div>
+            </div>
+            <div class="ast-toggle-row">
+              <button class="ast-toggle-btn active" data-view="ast">
+                🌳 AST View
+              </button>
+              <button class="ast-toggle-btn" data-view="parse">
+                🌲 Parse Tree
+              </button>
+            </div>
+            <div class="ast-view-container" id="ast-view-container">
+              <div class="empty-state">
+                <div class="empty-state__icon">🌳</div>
+                <div>Program chalayein AST dekhne ke liye</div>
+                <div class="empty-state__sub">
+                  (Run the program to see the syntax tree)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Semantic Analysis Tab -->
+        <div class="tab-content" id="tab-semantic">
+          <div class="semantic-viewer" id="semantic-viewer">
+            <div class="layer-header">
+              <div class="layer-title">
+                <span class="layer-icon">🔍</span>
+                <span>Layer 3: Semantic Analysis</span>
+              </div>
+              <div class="layer-desc">
+                Type checking, scope analysis, symbol table validation
+              </div>
+            </div>
+            <div class="semantic-content" id="semantic-content">
+              <div class="empty-state">
+                <div class="empty-state__icon">🔍</div>
+                <div>Program chalayein semantic analysis dekhne ke liye</div>
+                <div class="empty-state__sub">
+                  (Run to analyze types, scopes, and symbols)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- IR Code Generation Tab -->
+        <div class="tab-content" id="tab-ir">
+          <div class="ir-viewer" id="ir-viewer">
+            <div class="layer-header">
+              <div class="layer-title">
+                <span class="layer-icon">📝</span>
+                <span>Layer 4: Intermediate Code (IR)</span>
+              </div>
+              <div class="layer-desc">
+                Three-Address Code (TAC) generation from AST
+              </div>
+            </div>
+            <div class="ir-content" id="ir-content">
+              <div class="empty-state">
+                <div class="empty-state__icon">📝</div>
+                <div>Program chalayein IR code dekhne ke liye</div>
+                <div class="empty-state__sub">
+                  (Run to generate Three-Address Code)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Optimization Tab -->
+        <div class="tab-content" id="tab-optimize">
+          <div class="optimize-viewer" id="optimize-viewer">
+            <div class="layer-header">
+              <div class="layer-title">
+                <span class="layer-icon">⚡</span>
+                <span>Layer 5: Optimization</span>
+              </div>
+              <div class="layer-desc">
+                Constant folding, dead code elimination, common subexpression
+                elimination
+              </div>
+            </div>
+            <div class="optimize-content" id="optimize-content">
+              <div class="empty-state">
+                <div class="empty-state__icon">⚡</div>
+                <div>Program chalayein optimization dekhne ke liye</div>
+                <div class="empty-state__sub">(Run to see optimized code)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Target Code Generation Tab -->
+        <div class="tab-content" id="tab-target">
+          <div class="target-viewer" id="target-viewer">
+            <div class="layer-header">
+              <div class="layer-title">
+                <span class="layer-icon">🎯</span>
+                <span>Layer 6: Target Code Generation</span>
+              </div>
+              <div class="layer-desc">
+                Assembly-like instruction generation from optimized IR
+              </div>
+            </div>
+            <div class="target-content" id="target-content">
+              <div class="empty-state">
+                <div class="empty-state__icon">🎯</div>
+                <div>Program chalayein target code dekhne ke liye</div>
+                <div class="empty-state__sub">
+                  (Run to generate assembly instructions)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Code Emission Tab -->
+        <div class="tab-content" id="tab-emission">
+          <div class="emission-viewer" id="emission-viewer">
+            <div class="layer-header">
+              <div class="layer-title">
+                <span class="layer-icon">📤</span>
+                <span>Layer 7: Code Emission</span>
+              </div>
+              <div class="layer-desc">
+                Final machine code output with statistics
+              </div>
+            </div>
+            <div class="emission-content" id="emission-content">
+              <div class="empty-state">
+                <div class="empty-state__icon">📤</div>
+                <div>Program chalayein final code dekhne ke liye</div>
+                <div class="empty-state__sub">
+                  (Run to see emitted machine code)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Python Tab -->
+        <div class="tab-content" id="tab-python">
+          <div class="python-viewer">
+            <div class="python-header">
+              <span>⟳ Generated Python Code</span>
+              <button class="btn-small" id="copy-python">📋 COPY</button>
+            </div>
+            <pre class="python-code" id="python-code">
+<span class="empty-state">
+  <span class="empty-state__icon">🐍</span>
+  "Python Banao" button dabaein
+  (Click "PYTHON BANAO" to generate)
+</span>
+          </pre>
+          </div>
+        </div>
+
+        <!-- Layer Demonstration Tab -->
+        <div class="tab-content" id="tab-demo">
+          <div class="demo-viewer" id="demo-viewer">
+            <div class="layer-header">
+              <div class="layer-title">
+                <span class="layer-icon">🎓</span>
+                <span>7 Layers Demonstration</span>
+              </div>
+              <div class="layer-desc">
+                Step-by-step compilation pipeline with detailed explanations
+              </div>
+            </div>
+            <div class="demo-content" id="demo-content">
+              <div class="empty-state">
+                <div class="empty-state__icon">🎓</div>
+                <div>Program chalayein demonstration dekhne ke liye</div>
+                <div class="empty-state__sub">
+                  (Run a program to see all 7 layers in action)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Console Output -->
+      <aside class="panel panel--console">
+        <div class="panel__header">
+          <span class="panel__icon">⬛</span>
+          <span>CONSOLE AAKHIR</span>
+          <div class="console-controls">
+            <button class="btn-small" id="clear-console">CLR</button>
+          </div>
+        </div>
+        <div class="console-output" id="console-output">
+          <div class="console-welcome">
+            <div class="welcome-art">
+              ██████╗ ██╗ ██╗██╗ █████╗ ███╗ ██╗ ██████╗ ██╔══██╗██║ ██║██║
+              ██╔══██╗████╗ ██║██╔════╝ ██████╔╝██║ ██║██║ ███████║██╔██╗ ██║██║
+              ███╗ ██╔══██╗██║ ██║██║ ██╔══██║██║╚██╗██║██║ ██║ ██║
+              ██║╚██████╔╝███████╗██║ ██║██║ ╚████║╚██████╔╝ ╚═╝ ╚═╝ ╚═════╝
+              ╚══════╝╚═╝ ╚═╝╚═╝ ╚═══╝ ╚═════╝
+            </div>
+            <div class="welcome-text">
+              <span class="con-green">RULang v2.0 — 7 Layers Compiler</span
+              ><br />
+              <span class="con-dim">Compiler Construction Project</span><br />
+              <span class="con-dim"
+                >─────────────────────────────────────────</span
+              ><br />
+              <span class="con-yellow">▶ Ctrl+Enter</span
+              ><span class="con-dim"> ya "CHALAO" button dabaein</span><br />
+              <span class="con-dim"
+                >─────────────────────────────────────────</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Compiler Pipeline Visualization -->
+        <div class="pipeline-viz" id="pipeline-viz">
+          <div class="pipeline-header">7 LAYERS PIPELINE</div>
+          <div class="pipeline-layers">
+            <div class="pipeline-layer" data-layer="1">
+              <span class="pipeline-layer__num">1</span>
+              <span class="pipeline-layer__name">Lexical</span>
+              <span class="pipeline-layer__status"></span>
+            </div>
+            <div class="pipeline-layer" data-layer="2">
+              <span class="pipeline-layer__num">2</span>
+              <span class="pipeline-layer__name">Syntax</span>
+              <span class="pipeline-layer__status"></span>
+            </div>
+            <div class="pipeline-layer" data-layer="3">
+              <span class="pipeline-layer__num">3</span>
+              <span class="pipeline-layer__name">Semantic</span>
+              <span class="pipeline-layer__status"></span>
+            </div>
+            <div class="pipeline-layer" data-layer="4">
+              <span class="pipeline-layer__num">4</span>
+              <span class="pipeline-layer__name">IR Gen</span>
+              <span class="pipeline-layer__status"></span>
+            </div>
+            <div class="pipeline-layer" data-layer="5">
+              <span class="pipeline-layer__num">5</span>
+              <span class="pipeline-layer__name">Optimize</span>
+              <span class="pipeline-layer__status"></span>
+            </div>
+            <div class="pipeline-layer" data-layer="6">
+              <span class="pipeline-layer__num">6</span>
+              <span class="pipeline-layer__name">Target</span>
+              <span class="pipeline-layer__status"></span>
+            </div>
+            <div class="pipeline-layer" data-layer="7">
+              <span class="pipeline-layer__num">7</span>
+              <span class="pipeline-layer__name">Emit</span>
+              <span class="pipeline-layer__status"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Symbol Table -->
+        <div class="panel__header panel__header--sub">
+          <span class="panel__icon">📊</span>
+          <span>SYMBOL TABLE (ISM JADWAL)</span>
+        </div>
+        <div class="symbol-table-wrapper">
+          <table class="symbol-table" id="symbol-table">
+            <thead>
+              <tr>
+                <th>Naam</th>
+                <th>Qeemat</th>
+                <th>Nau</th>
+              </tr>
+            </thead>
+            <tbody id="symbol-table-body">
+              <tr class="empty-row">
+                <td colspan="3">Koi variable nahi</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </aside>
+    </main>
+
+    <!-- STATUS BAR -->
+    <footer class="statusbar">
+      <span class="statusbar__item statusbar__item--lang">⬡ RULang</span>
+      <span class="statusbar__item" id="sb-lines">0 lines</span>
+      <span class="statusbar__item" id="sb-chars">0 chars</span>
+      <span class="statusbar__item statusbar__item--right"
+        >Roman Urdu Retro Compiler © 2024</span
+      >
+      <span class="statusbar__item statusbar__item--right" id="sb-time"></span>
+    </footer>
+
+    <!-- HELP MODAL -->
+    <div class="modal-overlay" id="help-modal">
+      <div class="modal" style="max-width: 800px">
+        <div class="modal__header">
+          <span>📖 RULang Documentation — Compiler Construction Project</span>
+          <button class="modal__close" id="close-help">✕</button>
+        </div>
+        <div class="modal__body" style="max-height: 70vh; overflow-y: auto">
+          <div class="help-section">
+            <h3>🎯 RULang — Roman Urdu Programming Language</h3>
+            <p>
+              RULang is a beginner-friendly programming language inspired by
+              Roman Urdu keywords. It's designed as a compiler construction
+              course project that demonstrates all 7 phases of compilation:
+              Lexical Analysis, Syntax Analysis, Semantic Analysis, IR
+              Generation, Optimization, Target Code Generation, and Code
+              Emission.
+            </p>
+          </div>
+
+          <div class="help-section">
+            <h3>📝 COMPLETE LANGUAGE REFERENCE</h3>
+            <pre class="help-code">
+// ═══════════════════════════════════════════════════════════
+// VARIABLES — Variables aur Constants
+// ═══════════════════════════════════════════════════════════
+rakho x = 10              // Number variable
+rakho naam = "Ali"         // String variable
+rakho flag = sach         // Boolean (sach=true, jhooth=false)
+rakho n = 0
+
+// ═══════════════════════════════════════════════════════════
+// OUTPUT — Screen par dikhana
+// ═══════════════════════════════════════════════════════════
+likho "Salam Duniya!"      // String print karo
+likho x                   // Variable ki value print karo
+likho "Jama: " + x        // Concatenation
+
+// ═══════════════════════════════════════════════════════════
+// CONDITIONALS — Conditions aur Branching
+// ═══════════════════════════════════════════════════════════
+agar x > 5 to            // if condition
+    likho "Bara hai"
+khatam                   // End if block
+
+agar x > 10 to           // if-else if-else
+    likho "Bohat bada"
+warna agar x == 5 to    // else if
+    likho "Barabar"
+warna                    // else
+    likho "Chota"
+khatam
+
+// ═══════════════════════════════════════════════════════════
+// SWITCH — Multiple Cases
+// ═══════════════════════════════════════════════════════════
+chunao din               // Switch on variable
+    haalat 1
+        likho "Somwar"
+        todho            // Break ( IMPORTANT! )
+    haalat 2
+        likho "Mangal"
+        todho
+    warna                  // Default case
+        likho "Aur din"
+khatam
+
+// ═══════════════════════════════════════════════════════════
+// LOOPS — Repeat Karne ke liye
+// ═══════════════════════════════════════════════════════════
+// WHILE LOOP — Jabtak condition true hai
+jabtak x < 10 karo       // while x < 10
+    likho x
+    rakho x = x + 1
+khatam                   // End while
+
+// DO-WHILE — Pehle ek baar, phir check
+karo                     // do
+    likho x
+    rakho x = x + 1
+jabtak x < 5             // while condition
+khatam
+
+// FOR LOOP — Count karne ke liye
+gino i se 1 tak 10 karo  // for i from 1 to 10
+    likho i
+khatam
+
+// FOR REVERSE — Ginti ulti tarike se
+gino i se 10 tak 1 badhao -1 karo
+    likho i
+khatam
+
+// FOR WITH STEP — Har dusra number
+gino i se 0 tak 10 badhao 2 karo
+    likho i
+khatam
+
+// ═══════════════════════════════════════════════════════════
+// FUNCTIONS — Kaam jo dobara use hote hain
+// ═══════════════════════════════════════════════════════════
+kaam jama(a, b)         // Function declaration
+    wapas a + b         // Return value
+khatam
+
+kaam factorial(n)        // Recursive function
+    agar n <= 1 to
+        wapas 1
+    khatam
+    wapas n * factorial(n - 1)
+khatam
+
+// Function call
+likho jama(5, 3)
+likho factorial(5)
+
+// ═══════════════════════════════════════════════════════════
+// BREAK & CONTINUE — Loop control
+// ═══════════════════════════════════════════════════════════
+jabtak x < 100 karo
+    agar x == 50 to
+        todho           // Loop se bahar nikal
+    khatam
+    likho x
+khatam
+
+jabtak i < 10 karo
+    rakho i = i + 1
+    agar i % 2 == 0 to
+        agla            // Next iteration par jao
+    khatam
+    likho i            // Sirf odd numbers
+khatam
+
+// ═══════════════════════════════════════════════════════════
+// LOGICAL OPERATORS — AND, OR, NOT
+// ═══════════════════════════════════════════════════════════
+agar x > 5 aur x < 10 to    // AND
+    likho "Range mein"
+khatam
+
+agar x < 5 ya x > 10 to     // OR
+    likho "Range ke bahar"
+khatam
+
+agar nahi (x == 0) to        // NOT
+    likho "Zero nahi hai"
+khatam
+</pre
+            >
+          </div>
+
+          <div class="help-section">
+            <h3>🧮 ARITHMETIC OPERATORS</h3>
+            <pre class="help-code">
+rakho a = 10
+rakho b = 3
+
+likho a + b      // Addition: 13
+likho a - b      // Subtraction: 7
+likho a * b      // Multiplication: 30
+likho a / b      // Division: 3.333...
+likho a % b      // Modulo: 1 (baqi)</pre
+            >
+          </div>
+
+          <div class="help-section">
+            <h3>⚖️ COMPARISON OPERATORS</h3>
+            <pre class="help-code">
+x > y     // Greater than
+x < y     // Less than
+x >= y    // Greater than or equal
+x <= y    // Less than or equal
+x == y    // Equal
+x != y    // Not equal</pre
+            >
+          </div>
+
+          <div class="help-section">
+            <h3>🔧 BUILT-IN FUNCTIONS</h3>
+            <pre class="help-code">
+likho girda(3.7)     // Round: 4
+likho mutlaq(-5)      // Absolute: 5
+likho chhat(2.1)     // Ceiling: 3
+likho farsh(2.9)      // Floor: 2
+likho quwwat(2, 8)    // Power: 256
+likho lamba("Salam")  // Length: 6
+likho toStr(123)     // To string: "123"
+likho toNum("456")   // To number: 456</pre
+            >
+          </div>
+
+          <div class="help-section">
+            <h3>📖 KEYWORD TRANSLATION TABLE</h3>
+            <table class="help-table">
+              <tr>
+                <th>Keyword</th>
+                <th>English</th>
+                <th>Usage</th>
+              </tr>
+              <tr>
+                <td>rakho</td>
+                <td>put/place</td>
+                <td>Variable declare</td>
+              </tr>
+              <tr>
+                <td>likho</td>
+                <td>write</td>
+                <td>Print output</td>
+              </tr>
+              <tr>
+                <td>agar</td>
+                <td>if</td>
+                <td>If condition</td>
+              </tr>
+              <tr>
+                <td>to</td>
+                <td>then</td>
+                <td>Part of if</td>
+              </tr>
+              <tr>
+                <td>warna agar</td>
+                <td>else if</td>
+                <td>Else if condition</td>
+              </tr>
+              <tr>
+                <td>warna</td>
+                <td>else/otherwise</td>
+                <td>Else block</td>
+              </tr>
+              <tr>
+                <td>khatam</td>
+                <td>finished/end</td>
+                <td>End block</td>
+              </tr>
+              <tr>
+                <td>chunao</td>
+                <td>choose</td>
+                <td>Switch</td>
+              </tr>
+              <tr>
+                <td>haalat</td>
+                <td>case</td>
+                <td>Switch case</td>
+              </tr>
+              <tr>
+                <td>jabtak</td>
+                <td>as long as</td>
+                <td>While loop</td>
+              </tr>
+              <tr>
+                <td>karo</td>
+                <td>do</td>
+                <td>Do-while / loop body</td>
+              </tr>
+              <tr>
+                <td>gino</td>
+                <td>count</td>
+                <td>For loop</td>
+              </tr>
+              <tr>
+                <td>se</td>
+                <td>from</td>
+                <td>Range start</td>
+              </tr>
+              <tr>
+                <td>tak</td>
+                <td>to/until</td>
+                <td>Range end</td>
+              </tr>
+              <tr>
+                <td>badhao</td>
+                <td>increase</td>
+                <td>Step/increment</td>
+              </tr>
+              <tr>
+                <td>kaam</td>
+                <td>work/task</td>
+                <td>Function</td>
+              </tr>
+              <tr>
+                <td>wapas</td>
+                <td>return</td>
+                <td>Return value</td>
+              </tr>
+              <tr>
+                <td>todho</td>
+                <td>break/stop</td>
+                <td>Break loop</td>
+              </tr>
+              <tr>
+                <td>agla</td>
+                <td>next</td>
+                <td>Continue loop</td>
+              </tr>
+              <tr>
+                <td>aur</td>
+                <td>and</td>
+                <td>Logical AND</td>
+              </tr>
+              <tr>
+                <td>ya</td>
+                <td>or</td>
+                <td>Logical OR</td>
+              </tr>
+              <tr>
+                <td>nahi</td>
+                <td>not</td>
+                <td>Logical NOT</td>
+              </tr>
+              <tr>
+                <td>sach</td>
+                <td>true</td>
+                <td>Boolean true</td>
+              </tr>
+              <tr>
+                <td>jhooth</td>
+                <td>false</td>
+                <td>Boolean false</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="help-section">
+            <h3>🏗️ 7 LAYERS OF COMPILER</h3>
+            <pre class="help-code">
+Layer 1: LEXICAL ANALYSIS    → Scanner/Tokenizer
+         Input: "rakho x = 10"
+         Output: [RAKHO, IDENT, EQ, NUMBER]
+
+Layer 2: SYNTAX ANALYSIS     → Parser
+         Input: [RAKHO, IDENT, EQ, NUMBER]
+         Output: AST (Abstract Syntax Tree)
+
+Layer 3: SEMANTIC ANALYSIS  → Type & Scope Checking
+         Builds Symbol Table, Type Inference
+
+Layer 4: IR GENERATION      → Three-Address Code
+         MOV t0, 10
+         STORE x, t0
+
+Layer 5: OPTIMIZATION      → Code Improvement
+         Constant Folding, Dead Code Elimination
+
+Layer 6: TARGET CODE        → Assembly
+         MOV EAX, 10
+         MOV [x], EAX
+
+Layer 7: CODE EMISSION     → Machine Code
+         B8 0A 00 00 00...</pre
+            >
+          </div>
+
+          <div class="help-section">
+            <h3>⌨️ KEYBOARD SHORTCUTS</h3>
+            <div class="shortcuts">
+              <div><kbd>Ctrl+Enter</kbd> Run Program</div>
+              <div><kbd>Ctrl+L</kbd> Clear Console</div>
+              <div><kbd>Tab</kbd> Indent (4 spaces)</div>
+              <div><kbd>Escape</kbd> Close Help Modal</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="script.js"
+      onerror="console.error('Failed to load script.js')"
+    ></script>
+    <script>
+      // Fallback: ensure buttons work even if DOMContentLoaded has issues
+      document.addEventListener("DOMContentLoaded", function () {
+        // Buttons should already be set up by IDEController
+        setTimeout(function () {
+          var btnRun = document.getElementById("btn-run");
+          if (btnRun && !btnRun.hasAttribute("data-listener-added")) {
+            btnRun.setAttribute("data-listener-added", "true");
+          }
+        }, 100);
+      });
+    </script>
+  </body>
+</html>
