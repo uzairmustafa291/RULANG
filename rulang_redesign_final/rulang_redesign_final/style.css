@@ -2134,218 +2134,189 @@ html, body {
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   RESPONSIVE DESIGN — Mobile, Tablet, Desktop
+   RESPONSIVE DESIGN — Mobile First Approach
 ═════════════════════════════════════════════════════════════════════ */
 
-/* Tablet (768px - 1024px) */
-@media (max-width: 1024px) {
-  :root {
-    --explorer-w: 180px;
-    --console-w: 240px;
-  }
-  
-  body { font-size: 14px; }
-  
-  .menubar { flex-wrap: wrap; padding: 8px; }
-  .menubar__logo { flex: 1; min-width: 200px; }
-  .menubar__actions { flex: 1; min-width: 250px; gap: 6px; }
-  
-  .btn { padding: 6px 10px; font-size: 12px; }
-  .btn-icon { font-size: 16px; margin-right: 4px; }
-  
-  .ide-layout { flex-wrap: wrap; }
-  .panel--explorer { min-width: 150px; }
-  .editor-container { min-width: calc(100% - 150px); }
-}
-
-/* Mobile Large (480px - 768px) */
+/* MOBILE (< 768px) — Primary mobile layout */
 @media (max-width: 768px) {
   :root {
+    --header-h: 50px;
+    --panel-header-h: 40px;
     --explorer-w: 100%;
     --console-w: 100%;
-    --header-h: 48px;
-    --panel-header-h: 36px;
   }
   
-  body { font-size: 13px; }
-  
-  header.menubar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
-  
-  .menubar__logo {
-    order: 1;
-    font-size: 14px;
-    text-align: center;
-  }
-  
-  .menubar__logo .logo-sub {
-    font-size: 10px;
-  }
-  
-  .menubar__actions {
-    order: 3;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-    gap: 6px;
-  }
-  
-  .menubar__status {
-    order: 2;
-    justify-content: center;
-    padding: 4px 0;
-  }
-  
-  .btn {
-    padding: 6px 8px;
-    font-size: 11px;
-    min-width: 70px;
-    flex: 1;
-  }
-  
-  .btn-icon { font-size: 14px; }
-  .btn span:not(.btn-icon) { display: none; }
-  .theme-selector { padding: 4px 6px; font-size: 11px; }
-  
-  .ide-layout {
-    flex-direction: column;
-    padding: 6px;
-    gap: 6px;
-  }
-  
-  .panel--explorer {
-    width: 100%;
-    height: auto;
-    max-height: 200px;
-    border-radius: 6px;
-  }
-  
-  .panel--explorer.collapsed {
-    max-height: 36px;
-  }
-  
-  .editor-container {
-    width: 100%;
-    min-height: 300px;
-    border-radius: 6px;
-  }
-  
-  .panel--console {
-    width: 100%;
-    min-height: 150px;
-    max-height: 200px;
-    border-radius: 6px;
-  }
-  
-  .editor, .console {
-    border-radius: 4px;
-  }
-  
-  .panel__header {
-    padding: 8px 10px;
-    font-size: 12px;
-  }
-  
-  .panel__collapse {
-    font-size: 16px;
-  }
-  
-  /* Code Editor adjustments */
-  #code-editor {
-    font-size: 12px;
-    line-height: 1.5;
-  }
-  
-  /* Console adjustments */
-  .console-output {
-    font-size: 11px;
-    padding: 10px;
-  }
-  
-  .console-line { padding: 4px 0; }
-  
-  /* Help modal for mobile */
-  .modal {
-    width: 95vw !important;
-    max-height: 90vh;
-    border-radius: 8px;
-  }
-  
-  .modal__header {
-    padding: 10px 14px;
+  body {
     font-size: 13px;
   }
   
-  .modal__body {
-    padding: 14px 16px;
-    font-size: 12px;
-  }
-  
-  .help-section h3 { font-size: 12px; }
-  .help-section p { font-size: 12px; }
-  .help-code { font-size: 11px; padding: 12px; }
-  .help-table { font-size: 11px; }
-  .help-table th, .help-table td { padding: 6px 8px; }
-  
-  /* File list adjustments */
-  .file-item {
-    padding: 6px 8px;
-    font-size: 12px;
-  }
-  
-  .file-icon { font-size: 14px; margin-right: 4px; }
-}
-
-/* Mobile Small (320px - 480px) */
-@media (max-width: 480px) {
-  :root {
-    --header-h: 44px;
-  }
-  
-  body { font-size: 12px; }
-  
-  header.menubar {
-    padding: 6px;
+  /* Menu bar responsive */
+  .menubar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+    height: auto;
   }
   
   .menubar__logo {
+    flex: 1;
+    min-width: 120px;
     font-size: 12px;
+    text-align: center;
+    padding: 4px 0;
   }
   
-  .logo-bracket { font-size: 12px; }
-  .logo-text { font-size: 11px; }
-  .logo-lang { font-size: 10px; }
-  .logo-sub { display: none; }
+  .logo-sub {
+    display: none;
+  }
+  
+  .logo-text, .logo-lang {
+    font-size: 11px;
+  }
   
   .menubar__actions {
-    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    order: 3;
+  }
+  
+  .menubar__status {
+    width: 100%;
+    justify-content: center;
+    order: 2;
+    padding: 4px 0;
+    font-size: 11px;
   }
   
   .btn {
-    padding: 5px 6px;
+    padding: 6px 4px;
     font-size: 10px;
-    min-width: 50px;
+    height: auto;
+    min-height: 32px;
+  }
+  
+  .btn-icon {
+    font-size: 14px;
+    margin-right: 0;
+    display: block;
+  }
+  
+  .btn span:not(.btn-icon) {
+    display: none;
   }
   
   .theme-selector {
     grid-column: 1 / -1;
-    padding: 4px;
+    padding: 6px 4px;
+    font-size: 11px;
+  }
+  
+  /* IDE Layout - Stack vertically */
+  .ide-layout {
+    flex-direction: column;
+    top: var(--header-h);
+    padding: 6px;
+    gap: 6px;
+    overflow-y: auto;
+  }
+  
+  /* Explorer Panel */
+  .panel--explorer {
+    width: 100%;
+    max-height: 180px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .panel--explorer.collapsed {
+    width: 100%;
+    max-height: auto;
+  }
+  
+  .explorer-section {
+    max-height: 140px;
+    overflow-y: auto;
+    font-size: 12px;
+  }
+  
+  .file-item {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+  
+  .file-icon {
+    font-size: 12px;
+    margin-right: 4px;
+  }
+  
+  /* Editor Panel */
+  .panel--editor {
+    width: 100%;
+    min-height: 280px;
+    flex: 1;
+    border-radius: 4px;
+  }
+  
+  .panel__header {
+    padding: 6px 8px;
+    font-size: 11px;
+    height: auto;
+    min-height: 36px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  
+  .editor-tabs {
+    width: 100%;
+    overflow-x: auto;
+    display: flex;
+    gap: 2px;
+    padding: 2px 0;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .tab {
+    padding: 4px 8px;
     font-size: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
   
-  .editor-container {
-    min-height: 250px;
+  #editor-filename {
+    flex: 1;
+    min-width: 80px;
+    font-size: 11px;
   }
   
-  .panel--console {
-    min-height: 120px;
+  .editor-info {
+    width: 100%;
+    font-size: 9px;
+    justify-content: space-between;
   }
   
   #code-editor {
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.4;
+  }
+  
+  .line-numbers {
+    width: 30px;
+    font-size: 11px;
+  }
+  
+  /* Console Panel - Hidden by default on mobile */
+  .panel--console {
+    width: 100%;
+    max-height: 160px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    border-left: 1px solid var(--border);
+    border-top: 1px solid var(--border);
   }
   
   .console-output {
@@ -2353,11 +2324,15 @@ html, body {
     padding: 8px;
   }
   
-  .syntax-keyword { font-size: 11px; }
+  .console-line {
+    padding: 2px 0;
+    font-size: 10px;
+  }
   
-  /* Status bar for mobile */
+  /* Status bar */
   .statusbar {
-    height: 24px;
+    height: 28px;
+    font-size: 10px;
   }
   
   .statusbar__item {
@@ -2365,28 +2340,110 @@ html, body {
     font-size: 10px;
   }
   
-  /* Modal adjustments */
+  /* Modal */
   .modal {
-    width: 98vw !important;
-    max-height: 95vh;
+    width: 95vw !important;
+    max-height: 85vh;
     border-radius: 6px;
   }
   
-  .help-section { margin-bottom: 16px; }
-  .help-section h3 { font-size: 11px; }
-  .help-section p { font-size: 11px; }
-  .help-code { font-size: 10px; padding: 10px; }
+  .modal__header {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
   
-  .file-item {
-    padding: 4px 6px;
+  .modal__body {
+    padding: 12px 14px;
     font-size: 11px;
   }
   
-  /* Hide secondary text on very small screens */
-  .status-text {
-    display: inline;
-    font-size: 9px;
+  .help-section {
+    margin-bottom: 16px;
   }
+  
+  .help-section h3 {
+    font-size: 11px;
+  }
+  
+  .help-section p {
+    font-size: 11px;
+  }
+  
+  .help-code {
+    font-size: 10px;
+    padding: 10px;
+  }
+  
+  .help-table {
+    font-size: 10px;
+  }
+  
+  .help-table th, .help-table td {
+    padding: 4px 6px;
+  }
+  
+  kbd {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+}
+
+/* TABLET (768px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  :root {
+    --explorer-w: 150px;
+    --console-w: 200px;
+    --header-h: 48px;
+  }
+  
+  .menubar {
+    padding: 8px;
+    gap: 6px;
+  }
+  
+  .menubar__logo {
+    font-size: 13px;
+  }
+  
+  .menubar__actions {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  
+  .btn {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  
+  .btn span:not(.btn-icon) {
+    display: inline;
+  }
+  
+  .panel--explorer {
+    width: var(--explorer-w);
+    min-width: 120px;
+  }
+  
+  .panel--console {
+    width: var(--console-w);
+    min-width: 180px;
+  }
+  
+  .editor-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  
+  .tab {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+}
+
+/* DESKTOP (> 1024px) */
+@media (min-width: 1025px) {
+  /* Keep default desktop layout */
 }
 
 .emission-binary {
