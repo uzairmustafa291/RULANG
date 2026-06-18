@@ -2345,6 +2345,19 @@ html, body {
     font-size: 10px;
   }
   
+  /* Hide pipeline layers and symbol table on mobile - show only output */
+  .pipeline-viz {
+    display: none;
+  }
+  
+  .symbol-table-wrapper {
+    display: none;
+  }
+  
+  .panel__header--sub {
+    display: none;
+  }
+  
   /* Status bar */
   .statusbar {
     height: 28px;

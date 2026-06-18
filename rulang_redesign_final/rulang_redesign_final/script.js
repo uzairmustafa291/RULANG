@@ -3481,6 +3481,10 @@ class IDEController {
     // Initial syntax highlighting
     this.highlightSyntax();
 
+    // Update status text based on viewport size
+    this.updateStatusText();
+    window.addEventListener('resize', () => this.updateStatusText());
+
     document.getElementById('btn-run').addEventListener('click',    () => this.run());
     document.getElementById('btn-clear').addEventListener('click',  () => this.clearAll());
     document.getElementById('btn-python').addEventListener('click', () => this.generatePython());
@@ -4301,6 +4305,18 @@ class IDEController {
     this.consoleLog(`✓ Theme changed to ${themeName || 'dark'}`, 'success');
     // Re-highlight code
     this.highlightSyntax();
+  }
+
+  // Update status text based on viewport size
+  updateStatusText() {
+    const statusText = document.getElementById('status-text');
+    if (window.innerWidth <= 768) {
+      // Mobile view: show "RUN"
+      statusText.textContent = 'RUN';
+    } else {
+      // Desktop/Tablet view: show "TAYYAR"
+      statusText.textContent = 'TAYYAR';
+    }
   }
 
   // Syntax highlighting
