@@ -2133,6 +2133,262 @@ html, body {
   word-break: break-all;
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   RESPONSIVE DESIGN — Mobile, Tablet, Desktop
+═════════════════════════════════════════════════════════════════════ */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  :root {
+    --explorer-w: 180px;
+    --console-w: 240px;
+  }
+  
+  body { font-size: 14px; }
+  
+  .menubar { flex-wrap: wrap; padding: 8px; }
+  .menubar__logo { flex: 1; min-width: 200px; }
+  .menubar__actions { flex: 1; min-width: 250px; gap: 6px; }
+  
+  .btn { padding: 6px 10px; font-size: 12px; }
+  .btn-icon { font-size: 16px; margin-right: 4px; }
+  
+  .ide-layout { flex-wrap: wrap; }
+  .panel--explorer { min-width: 150px; }
+  .editor-container { min-width: calc(100% - 150px); }
+}
+
+/* Mobile Large (480px - 768px) */
+@media (max-width: 768px) {
+  :root {
+    --explorer-w: 100%;
+    --console-w: 100%;
+    --header-h: 48px;
+    --panel-header-h: 36px;
+  }
+  
+  body { font-size: 13px; }
+  
+  header.menubar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  .menubar__logo {
+    order: 1;
+    font-size: 14px;
+    text-align: center;
+  }
+  
+  .menubar__logo .logo-sub {
+    font-size: 10px;
+  }
+  
+  .menubar__actions {
+    order: 3;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 6px;
+  }
+  
+  .menubar__status {
+    order: 2;
+    justify-content: center;
+    padding: 4px 0;
+  }
+  
+  .btn {
+    padding: 6px 8px;
+    font-size: 11px;
+    min-width: 70px;
+    flex: 1;
+  }
+  
+  .btn-icon { font-size: 14px; }
+  .btn span:not(.btn-icon) { display: none; }
+  .theme-selector { padding: 4px 6px; font-size: 11px; }
+  
+  .ide-layout {
+    flex-direction: column;
+    padding: 6px;
+    gap: 6px;
+  }
+  
+  .panel--explorer {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    border-radius: 6px;
+  }
+  
+  .panel--explorer.collapsed {
+    max-height: 36px;
+  }
+  
+  .editor-container {
+    width: 100%;
+    min-height: 300px;
+    border-radius: 6px;
+  }
+  
+  .panel--console {
+    width: 100%;
+    min-height: 150px;
+    max-height: 200px;
+    border-radius: 6px;
+  }
+  
+  .editor, .console {
+    border-radius: 4px;
+  }
+  
+  .panel__header {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  
+  .panel__collapse {
+    font-size: 16px;
+  }
+  
+  /* Code Editor adjustments */
+  #code-editor {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  
+  /* Console adjustments */
+  .console-output {
+    font-size: 11px;
+    padding: 10px;
+  }
+  
+  .console-line { padding: 4px 0; }
+  
+  /* Help modal for mobile */
+  .modal {
+    width: 95vw !important;
+    max-height: 90vh;
+    border-radius: 8px;
+  }
+  
+  .modal__header {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  
+  .modal__body {
+    padding: 14px 16px;
+    font-size: 12px;
+  }
+  
+  .help-section h3 { font-size: 12px; }
+  .help-section p { font-size: 12px; }
+  .help-code { font-size: 11px; padding: 12px; }
+  .help-table { font-size: 11px; }
+  .help-table th, .help-table td { padding: 6px 8px; }
+  
+  /* File list adjustments */
+  .file-item {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+  
+  .file-icon { font-size: 14px; margin-right: 4px; }
+}
+
+/* Mobile Small (320px - 480px) */
+@media (max-width: 480px) {
+  :root {
+    --header-h: 44px;
+  }
+  
+  body { font-size: 12px; }
+  
+  header.menubar {
+    padding: 6px;
+  }
+  
+  .menubar__logo {
+    font-size: 12px;
+  }
+  
+  .logo-bracket { font-size: 12px; }
+  .logo-text { font-size: 11px; }
+  .logo-lang { font-size: 10px; }
+  .logo-sub { display: none; }
+  
+  .menubar__actions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .btn {
+    padding: 5px 6px;
+    font-size: 10px;
+    min-width: 50px;
+  }
+  
+  .theme-selector {
+    grid-column: 1 / -1;
+    padding: 4px;
+    font-size: 10px;
+  }
+  
+  .editor-container {
+    min-height: 250px;
+  }
+  
+  .panel--console {
+    min-height: 120px;
+  }
+  
+  #code-editor {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+  
+  .console-output {
+    font-size: 10px;
+    padding: 8px;
+  }
+  
+  .syntax-keyword { font-size: 11px; }
+  
+  /* Status bar for mobile */
+  .statusbar {
+    height: 24px;
+  }
+  
+  .statusbar__item {
+    padding: 0 8px;
+    font-size: 10px;
+  }
+  
+  /* Modal adjustments */
+  .modal {
+    width: 98vw !important;
+    max-height: 95vh;
+    border-radius: 6px;
+  }
+  
+  .help-section { margin-bottom: 16px; }
+  .help-section h3 { font-size: 11px; }
+  .help-section p { font-size: 11px; }
+  .help-code { font-size: 10px; padding: 10px; }
+  
+  .file-item {
+    padding: 4px 6px;
+    font-size: 11px;
+  }
+  
+  /* Hide secondary text on very small screens */
+  .status-text {
+    display: inline;
+    font-size: 9px;
+  }
+}
+
 .emission-binary {
   color: var(--text-dim);
   font-size: 10px;
